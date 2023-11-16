@@ -5,3 +5,7 @@
 #
 
 import click
+
+@click.command()
+def collect() -> None:
+    print("Test")
