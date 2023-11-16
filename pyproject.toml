@@ -23,7 +23,7 @@ classifiers = [
 ]
 
 [project.scripts]
-vector-collect = "vector-collector.cli:collect"
+vector-collect = "veccol.cli:collect"
 
 [project.urls]
 homepage = "https://github.com/e-rk/vector-collector"
