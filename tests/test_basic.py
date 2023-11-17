@@ -2,7 +2,9 @@ import unittest
 import shutil
 from pathlib import Path
 import subprocess
+import time
 
+from veccol.processor import process_capture
 from veccol.types import Spec
 from veccol.runner import Runner
 
@@ -18,12 +20,13 @@ class TestBasicOperation(unittest.TestCase):
         build_test_app(Path("./tests/data"))
 
     def test_vector_collection(self) -> None:
+        spec = None
         with open("./tests/data/spec.yaml") as f:
             spec = Spec.from_yaml(f.read())
-            runner = Runner(spec)
-            runner.run()
-            print(spec)
-            exit(1)
+        runner = Runner(spec)
+        runner.run()
+        time.sleep(spec.config.timeout)
+        process_capture(spec, Path("capture.log"))
 
 if __name__ == '__main__':
     unittest.main()

@@ -3,6 +3,7 @@ pre-config:
     - "file ./tests/data/test"
     - "set pagination off"
 config:
+  timeout: 10
   collect:
     - name: "main_for_loop"
       points:
