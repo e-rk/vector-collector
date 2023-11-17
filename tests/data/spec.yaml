@@ -1,18 +1,21 @@
 pre-config:
   commands:
-    - "target remote :11111"
+    - "file ./tests/data/test"
+    - "set pagination off"
 config:
   collect:
-    - name: "collect_main_for_loop"
+    - name: "main_for_loop"
       points:
         - locspec: "main.c:7"
           values:
             - name: "temp"
               expr: "temp"
+              format: "%u"
         - locspec: "main.c:8"
           values:
             - name: "state"
               expr: "state"
+              format: "%u"
 post-config:
   commands:
     - "run"
