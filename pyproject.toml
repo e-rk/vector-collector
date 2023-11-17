@@ -3,7 +3,7 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "vector-collector"
+name = "veccol"
 version = "0.1.0"
 description = "Collect values stored in memory using GDB"
 authors = [{ name = "Rafał Kuźnia" }, { email = "rafal.kuznia@protonmail.com" }]
@@ -91,4 +91,11 @@ disable = [
     "logging-fstring-interpolation",
     "missing-function-docstring",
     "unused-argument",
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q"
+testpaths = [
+    "tests",
 ]
