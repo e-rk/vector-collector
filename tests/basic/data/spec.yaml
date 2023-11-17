@@ -1,0 +1,18 @@
+pre-config:
+  commands:
+    - "target remote :11111"
+config:
+  collect:
+    - name: "collect_main_for_loop"
+      points:
+        - locspec: "main.c:7"
+          values:
+            - name: "temp"
+              expr: "temp"
+        - locspec: "main.c:8"
+          values:
+            - name: "state"
+              expr: "state"
+post-config:
+  commands:
+    - "run"
