@@ -16,6 +16,7 @@ class PreConfig:
 class Value:
     name: str
     expr: str
+    format: str
 
 @dataclass
 class Point:
