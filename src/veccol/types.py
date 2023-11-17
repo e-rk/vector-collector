@@ -31,6 +31,7 @@ class Collect:
 @dataclass
 class Config:
     collect: list[Collect]
+    timeout: int
 
 @dataclass
 class Spec(YAMLWizard):

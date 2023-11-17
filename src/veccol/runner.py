@@ -11,6 +11,7 @@ import shutil
 from subprocess import run
 from more_itertools import mark_ends
 from itertools import chain
+import time
 import os
 
 class Runner:
@@ -27,6 +28,9 @@ class Runner:
         file = self._make_temp()
         for command in self.spec.pre_config.commands:
             self.write(file, command)
+            self.write(file, "set logging redirect on")
+            self.write(file, "set logging file capture.log")
+            self.write(file, "set logging on")
         for col in self.spec.config.collect:
             prefix = col.name
             for is_first, is_last, point in mark_ends(col.points):
@@ -53,11 +57,9 @@ class Runner:
 
     def run(self) -> None:
         file = self._generate_script()
-        import time
-        # time.sleep(100)
         gdb = shutil.which("gdb")
         if gdb is None:
             raise RuntimeError("GDB executable not found")
-        os.system(f"{gdb} -x {file.name}")
-        time.sleep(5)
+        os.system(f"{gdb} -x {file.name} &")
+        time.sleep(1)
 
