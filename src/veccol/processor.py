@@ -19,7 +19,7 @@ def process_collection(spec: Spec, data: list[str], collect: Collect) -> None:
         removed_prefix = map(lambda x: x.removeprefix(f"{name}:"), our_lines)
         split_lines = map(lambda x: x.strip().split(","), removed_prefix)
         to_dict = list(map(lambda x: dict(zip(value_name, x)), split_lines))
-        f.write(f"{to_dict}")
+        csvfile.writeheader()
         csvfile.writerows(to_dict)
 
 def process_capture(spec: Spec, file: Path) -> None:
