@@ -25,7 +25,8 @@ logger.addHandler(ch)
 @click.command()
 @click.argument("specfile", type=click.File())
 @click.option("--timeout", type=int)
-def collect(specfile: TextIO, timeout: int) -> None:
+@click.option("--cfilter", "-f", type=str, multiple=True)
+def collect(specfile: TextIO, timeout: int, cfilter: list[str]) -> None:
     spec = Spec.from_yaml(specfile.read())
     datestr = datetime.now().strftime("%Y%m%d-%H%M%S")
     logname = Path(f"{datestr}.log")
@@ -33,7 +34,7 @@ def collect(specfile: TextIO, timeout: int) -> None:
     with suppress(FileExistsError):
         os.makedirs(outdir)
     runner = Runner(spec)
-    runner.run(logname=logname)
+    runner.run(logname=logname, filt=cfilter)
     if timeout:
         time.sleep(timeout)
     else:

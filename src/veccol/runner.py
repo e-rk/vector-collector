@@ -25,14 +25,14 @@ class Runner:
     def _make_temp(self) -> TextIO:
         return tempfile.NamedTemporaryFile(mode="w+")
 
-    def _generate_script(self, logname: Path) -> TextIO:
+    def _generate_script(self, logname: Path, filt: list[str]) -> TextIO:
         file = self._make_temp()
         for command in self.spec.pre_config.commands:
             self.write(file, command)
             self.write(file, "set logging redirect on")
             self.write(file, f"set logging file {logname}")
             self.write(file, "set logging on")
-        for col in self.spec.config.collect:
+        for col in filter(lambda x: not filt or x.name in filt, self.spec.config.collect):
             prefix = col.name
             for is_first, is_last, point in mark_ends(col.points):
                 self.write(file, f"b {point.locspec}")
@@ -56,8 +56,8 @@ class Runner:
         file.flush()
         return file
 
-    def run(self, logname: Path) -> None:
-        file = self._generate_script(logname=logname)
+    def run(self, logname: Path, filt: list[str]) -> None:
+        file = self._generate_script(logname=logname, filt=filt)
         gdb = shutil.which("gdb")
         if gdb is None:
             raise RuntimeError("GDB executable not found")
