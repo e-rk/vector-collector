@@ -24,6 +24,7 @@ classifiers = [
 
 [project.scripts]
 vector-collect = "veccol.cli:collect"
+vector-process = "veccol.cli:process"
 
 [project.urls]
 homepage = "https://github.com/e-rk/vector-collector"

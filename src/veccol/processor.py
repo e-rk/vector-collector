@@ -9,11 +9,11 @@ from pathlib import Path
 from itertools import chain
 import csv
 
-def process_collection(spec: Spec, data: list[str], collect: Collect) -> None:
+def process_collection(spec: Spec, data: list[str], outdir: Path, collect: Collect) -> None:
     name = collect.name
     value_name = [v.name for v in chain.from_iterable(p.values for p in collect.points)]
     csvfile = None
-    with open(f"{name}.csv", "w", newline='') as f:
+    with open(f"{outdir}/{name}.csv", "w", newline='') as f:
         csvfile = csv.DictWriter(f, fieldnames=value_name)
         our_lines = filter(lambda x: x.startswith(name), data)
         removed_prefix = map(lambda x: x.removeprefix(f"{name}:"), our_lines)
@@ -22,9 +22,9 @@ def process_collection(spec: Spec, data: list[str], collect: Collect) -> None:
         csvfile.writeheader()
         csvfile.writerows(to_dict)
 
-def process_capture(spec: Spec, file: Path) -> None:
+def process_capture(spec: Spec, file: Path, outdir: Path) -> None:
     lines = []
     with open(file) as f:
         lines = f.readlines()
     for c in spec.config.collect:
-        process_collection(spec, lines, c)
+        process_collection(spec, lines, outdir, c)

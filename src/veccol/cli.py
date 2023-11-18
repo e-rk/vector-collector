@@ -12,6 +12,9 @@ from veccol.types import Spec
 from typing import TextIO
 from veccol.runner import Runner
 from veccol.processor import process_capture
+from datetime import datetime
+from contextlib import suppress
+import os
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
@@ -20,15 +23,27 @@ ch.setLevel(logging.DEBUG)
 logger.addHandler(ch)
 
 @click.command()
-@click.argument("spec", type=click.File())
+@click.argument("specfile", type=click.File())
 @click.option("--timeout", type=int)
-def collect(_spec: TextIO, timeout: int) -> None:
-    spec = Spec.from_yaml(_spec.read())
+def collect(specfile: TextIO, timeout: int) -> None:
+    spec = Spec.from_yaml(specfile.read())
+    datestr = datetime.now().strftime("%Y%m%d-%H%M%S")
+    logname = Path(f"{datestr}.log")
+    outdir = Path("captures", datestr)
+    with suppress(FileExistsError):
+        os.makedirs(outdir)
     runner = Runner(spec)
-    runner.run()
+    runner.run(logname=logname)
     if timeout:
         time.sleep(timeout)
     else:
         time.sleep(spec.config.timeout)
-    process_capture(spec, Path("capture.txt"))
+    process_capture(spec, logname, outdir)
 
+@click.command()
+@click.argument("specfile", type=click.File())
+@click.argument("capturefile", type=click.Path(path_type=Path))
+def process(specfile: Spec, capturefile: Path) -> None:
+    spec = Spec.from_yaml(specfile.read())
+    outdir = capturefile.parent
+    process_capture(spec, capturefile, outdir)

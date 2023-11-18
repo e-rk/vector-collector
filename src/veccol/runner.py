@@ -11,6 +11,7 @@ import shutil
 from subprocess import run
 from more_itertools import mark_ends
 from itertools import chain
+from pathlib import Path
 import time
 import os
 
@@ -24,12 +25,12 @@ class Runner:
     def _make_temp(self) -> TextIO:
         return tempfile.NamedTemporaryFile(mode="w+")
 
-    def _generate_script(self) -> TextIO:
+    def _generate_script(self, logname: Path) -> TextIO:
         file = self._make_temp()
         for command in self.spec.pre_config.commands:
             self.write(file, command)
             self.write(file, "set logging redirect on")
-            self.write(file, "set logging file capture.log")
+            self.write(file, f"set logging file {logname}")
             self.write(file, "set logging on")
         for col in self.spec.config.collect:
             prefix = col.name
@@ -55,8 +56,8 @@ class Runner:
         file.flush()
         return file
 
-    def run(self) -> None:
-        file = self._generate_script()
+    def run(self, logname: Path) -> None:
+        file = self._generate_script(logname=logname)
         gdb = shutil.which("gdb")
         if gdb is None:
             raise RuntimeError("GDB executable not found")
