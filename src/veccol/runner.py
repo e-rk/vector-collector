@@ -41,7 +41,7 @@ class Runner:
                 for value in point.values:
                     value_name = f"{prefix}_{value.name}"
                     self.write(file, f"set ${value_name} = {value.expr}")
-                if is_last:
+                if is_last or point.force_capture:
                     all_values = list(chain.from_iterable(p.values for p in col.points))
                     names = [f"${prefix}_{v.name}" for v in all_values]
                     formats = [v.format for v in all_values]

@@ -22,6 +22,7 @@ class Value:
 class Point:
     locspec: str
     values: list[Value]
+    force_capture: bool = False
 
 @dataclass
 class Collect:
