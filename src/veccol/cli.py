@@ -28,13 +28,17 @@ logger.addHandler(ch)
 @click.option("--cfilter", "-f", type=str, multiple=True)
 def collect(specfile: TextIO, timeout: int, cfilter: list[str]) -> None:
     spec = Spec.from_yaml(specfile.read())
+    spec.config.collect = list(filter(
+            lambda x: x.name in cfilter or not cfilter,
+            spec.config.collect))
+    logger.error(spec.config.collect)
     datestr = datetime.now().strftime("%Y%m%d-%H%M%S")
     logname = Path(f"{datestr}.log")
     outdir = Path("captures", datestr)
     with suppress(FileExistsError):
         os.makedirs(outdir)
     runner = Runner(spec)
-    runner.run(logname=logname, filt=cfilter)
+    runner.run(logname=logname)
     if timeout:
         time.sleep(timeout)
     else:
